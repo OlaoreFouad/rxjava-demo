@@ -8,6 +8,8 @@ import android.util.Log;
 import dev.iamfoodie.rxjava.data.DataSource;
 import dev.iamfoodie.rxjava.models.Task;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -60,6 +62,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        createOp();
+
+    }
+
+    private void createOp() {
+        Observable<Task> taskObservable = create(new ObservableOnSubscribe<Task>() {
+            @Override
+            public void subscribe(ObservableEmitter<Task> emitter) throws Exception {
+                if (!emitter.isDisposed()) {
+                    emitter.onNext(new Task("Slap that rude bitch!", 10, false));
+                    emitter.onComplete();
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        taskObservable.subscribe(new Observer<Task>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Task task) {
+                Log.d(TAG, "Task gotten. Description: " + task.getDescription());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "Emission Complete!");
+            }
+        });
     }
 
     @Override
