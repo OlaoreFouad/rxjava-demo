@@ -5,6 +5,8 @@ import static io.reactivex.Observable.*;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 import dev.iamfoodie.rxjava.data.DataSource;
 import dev.iamfoodie.rxjava.models.Task;
 import io.reactivex.Observable;
@@ -15,6 +17,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         createOp();
         justOp();
         rangeOp();
+        intervalOp();
+        timerOp();
 
     }
 
@@ -135,6 +140,12 @@ public class MainActivity extends AppCompatActivity {
     private void rangeOp() {
         Observable<Integer> rangeObs = range(1, 20)
                 .subscribeOn(Schedulers.io())
+                .map(new Function<Integer, Integer>() {
+                    @Override
+                    public Integer apply(Integer integer) throws Exception {
+                        return integer + 10;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread());
 
         rangeObs.subscribe(new Observer<Integer>() {
@@ -157,6 +168,73 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete() {
                 Log.d(TAG, "Subscription completed!");
+            }
+        });
+    }
+
+    public void intervalOp() {
+        Observable<Long> intervalObs = interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .takeWhile(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Exception {
+                        Log.d("MainActivity", "Interval Value: " + aLong + " Thread: " + Thread.currentThread().getName());
+                        return aLong <= 5;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread());
+
+        intervalObs.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                Log.d("MainActivity", "Value: " + aLong);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("MainActivity", "Emission Complete!");
+            }
+        });
+    }
+
+    public void timerOp() {
+        Observable<String> timerObs = timer(7, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .map(new Function<Long, String>() {
+                    @Override
+                    public String apply(Long aLong) throws Exception {
+                        return String.valueOf(aLong) + "0";
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+
+        timerObs.subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String aLong) {
+                Log.d("MainActivity", "From timer: " + aLong);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
