@@ -72,7 +72,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 comment.setVisibility(View.INVISIBLE);
                 showProgress(true);
             } else {
-                comment.setText(post.getComments().size());
+                comment.setText(String.valueOf(post.getComments().size()));
                 showProgress(false);
             }
         }

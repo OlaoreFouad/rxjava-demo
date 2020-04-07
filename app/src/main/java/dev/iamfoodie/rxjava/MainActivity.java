@@ -2,8 +2,12 @@ package dev.iamfoodie.rxjava;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static io.reactivex.Observable.*;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button flatmapButton = findViewById(R.id.start_flatmap_activity);
+        flatmapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, FlatMapActivity.class));
+            }
+        });
 
         obs = fromIterable(DataSource.getTasks())
                 .subscribeOn(Schedulers.io())
