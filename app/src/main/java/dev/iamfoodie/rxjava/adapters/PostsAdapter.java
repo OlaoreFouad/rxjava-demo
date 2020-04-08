@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.iamfoodie.rxjava.R;
@@ -20,8 +21,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     private List<Post> posts;
     private Context ctx;
 
-    public PostsAdapter(Context context, List<Post> posts) {
-        this.posts = posts;
+    public PostsAdapter(Context context) {
+        this.posts = new ArrayList<>();
+        this.posts.add(new Post(1, 1, "Title", "Content", null));
         this.ctx = context;
     }
 
@@ -40,10 +42,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+        notifyDataSetChanged();
     }
 
     public void updatePostAt(Post post) {
         this.posts.set(posts.indexOf(post), post);
+        notifyItemChanged(this.posts.indexOf(post));
     }
 
     @Override
