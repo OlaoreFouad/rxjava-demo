@@ -23,7 +23,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     public PostsAdapter(Context context) {
         this.posts = new ArrayList<>();
-        this.posts.add(new Post(1, 1, "Title", "Content", null));
         this.ctx = context;
     }
 
@@ -41,7 +40,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public void setPosts(List<Post> posts) {
-        this.posts = posts;
+        this.posts.clear();
+        this.posts.addAll(posts);
         notifyDataSetChanged();
     }
 

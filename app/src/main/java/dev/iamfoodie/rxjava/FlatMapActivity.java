@@ -114,7 +114,6 @@ public class FlatMapActivity extends AppCompatActivity {
                     @Override
                     public ObservableSource<Post> apply(List<Post> posts) throws Exception {
                         postsAdapter.setPosts(posts);
-                        Log.d(TAG, "apply: " + posts.size());
                         return Observable.fromIterable(
                                 posts
                         ).subscribeOn(Schedulers.io());
