@@ -86,6 +86,8 @@ public class FlatMapActivity extends AppCompatActivity {
                     @Override
                     public Post apply(List<Comment> comments) throws Exception {
 
+                        Log.d(TAG, "Size: " + comments.size());
+
                         Thread.sleep((new Random(5).nextInt() + 1) * 1000);
                         post.setComments(comments);
 
@@ -113,7 +115,8 @@ public class FlatMapActivity extends AppCompatActivity {
                 .flatMap(new Function<List<Post>, ObservableSource<Post>>() {
                     @Override
                     public ObservableSource<Post> apply(List<Post> posts) throws Exception {
-                        postsAdapter.setPosts(posts);
+                        Log.d(TAG, "Posts size: " + posts.size());
+                        postsAdapter.submitList(posts);
                         return Observable.fromIterable(
                                 posts
                         ).subscribeOn(Schedulers.io());

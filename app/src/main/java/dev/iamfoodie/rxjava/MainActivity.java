@@ -21,6 +21,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -44,6 +45,46 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, FlatMapActivity.class));
             }
         });
+
+        Observable<Integer> integerObservable = Observable.just(1, 2, 3, 4, 5)
+                .map(new Function<Integer, Integer>() {
+                    @Override
+                    public Integer apply(Integer integer) throws Exception {
+                        return integer + 1;
+                    }
+                })
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        return integer > 2;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        integerObservable.subscribe(new Observer<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                disposable.add(d);
+                Log.d(TAG, "subscribed on: " + Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.d(TAG, "next number received as: " + integer + " on thread: " + Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
 
         obs = fromIterable(DataSource.getTasks())
                 .subscribeOn(Schedulers.io())

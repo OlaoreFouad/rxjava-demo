@@ -1,5 +1,7 @@
 package dev.iamfoodie.rxjava.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -71,5 +73,11 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Title: " + this.getTitle() + ", Content: " + this.getContent();
     }
 }
